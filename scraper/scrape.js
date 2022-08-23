@@ -58,27 +58,9 @@ const scraper = async () => {
 module.exports = { scraper }
 
 if (require.main === module) {
-    let a = scraper()
-    a.then(v => {
-        let table = v[2]
-        let length1 = 0, length2 = 0, length3 = 0
-        table.forEach(v => {
-            if (v[0].length > length1) length1 = v[0].length
-            if (v[1].length > length2) length2 = v[1].length
-            if (v[2].length > length3) length3 = v[2].length
-        })
-        let tableDisplay = ``
-        table.filter((v, i) => i < 5).forEach(row => {
-            let r1 = length1 - row[0].length
-            let r2 = length2 - row[1].length
-            let r3 = length3 - row[2].length
-            let row1 = ` ${row[0]}${" ".repeat(r1)}`
-            let row2 = ` | ${row[1]}${" ".repeat(r2)}`
-            let row3 = ` | ${row[2]}${" ".repeat(r3)} `
-            tableDisplay += `${row1}${row2}${row3}\n`
-        })
-        console.log(tableDisplay)
 
-    })
+    setInterval(() => {
+        console.log("Hi")
+    }, 5000);
 
 }

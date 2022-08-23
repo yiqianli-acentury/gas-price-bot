@@ -14,7 +14,12 @@ const setAutoMessage = (client, clientId, delay, frequency, setTime) => {
     } else {
         delay = setTime + delay - currentTime
     }
+    // console.log(delay)
+
     setTimeout(() => {
+        scraper().then((a) => {
+            client.channels.cache.get(clientId).send(`${a[0]} \n${a[1]} \n ${a[2]}\n @everyone`)
+        })
         setInterval(() => {
             scraper().then((a) => {
                 client.channels.cache.get(clientId).send(`${a[0]} \n${a[1]} \n ${a[2]}\n @everyone`)
@@ -47,10 +52,10 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 client.once('ready', () => {
     for (channelId in autoPostConfig) {
         setAutoMessage(
-            client, 
-            channelId, 
-            autoPostConfig[channelId].delay, 
-            autoPostConfig[channelId].frequency, 
+            client,
+            channelId,
+            autoPostConfig[channelId].delay,
+            autoPostConfig[channelId].frequency,
             autoPostConfig[channelId].setTime)
     }
 });
