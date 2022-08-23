@@ -45,7 +45,7 @@ const scraper = async () => {
                 let r2 = length2 - row[1].length
                 let r3 = length3 - row[2].length
                 let row1 = ` ${row[0]}${" ".repeat(r1)}`
-                let row2 = ` | ${row[1]}${" ".repeat(r2)}`
+                let row2 = ` | ${" ".repeat(r2)}${row[1]}`
                 let row3 = ` | ${row[2]}${" ".repeat(r3)} `
                 tableDisplay += `${row1}${row2}${row3}\n`
             })
