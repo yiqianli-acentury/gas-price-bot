@@ -1,0 +1,84 @@
+const axios = require('axios')
+const jsdom = require("jsdom");
+
+
+const weburl = "https://toronto.citynews.ca/wp-json/rdm-grcn/v2/pages/toronto-gta-gas-prices"
+const scraper = async () => {
+    return axios.get(weburl)
+        .then(function (response) {
+            // handle success
+            // console.log(response.data);
+            // console.log(response.data.content)
+            const dom = new jsdom.JSDOM(response.data.content);
+            const table = dom.window.document.querySelector('tbody').querySelectorAll('tr')
+            let priceTable = []
+            table.forEach(tr => {
+                let priceRow = []
+                tr.querySelectorAll("td").forEach(v => {
+                    priceRow.push(v.innerHTML)
+                })
+                if (priceRow.length > 0) priceTable.push(priceRow)
+            })
+            const predict = dom.window.document.querySelector('div')
+            const priceStatus = predict.querySelectorAll("div")
+            let price = priceStatus[3].textContent
+            let symbol = ""
+            if (priceStatus[1].style.getPropertyValue('display') === 'block') {
+                symbol = ":small_red_triangle:"
+            }
+            if (priceStatus[2].style.getPropertyValue('display') === 'block') {
+                symbol = ":small_red_triangle_down:"
+            }
+            let predictString = predict.textContent
+            let parseList = predictString.split(" ")
+            let expectIndex = parseList.indexOf("prices")
+            predictString = parseList.splice(expectIndex).join(" ")
+            let length1 = 0, length2 = 0, length3 = 0
+            priceTable.forEach(v => {
+                if (v[0].length > length1) length1 = v[0].length
+                if (v[1].length > length2) length2 = v[1].length
+                if (v[2].length > length3) length3 = v[2].length
+            })
+            let tableDisplay = "```"
+            priceTable.filter((v, i) => i < 5).forEach(row => {
+                let r1 = length1 - row[0].length
+                let r2 = length2 - row[1].length
+                let r3 = length3 - row[2].length
+                let row1 = ` ${row[0]}${" ".repeat(r1)}`
+                let row2 = ` | ${row[1]}${" ".repeat(r2)}`
+                let row3 = ` | ${row[2]}${" ".repeat(r3)} `
+                tableDisplay += `${row1}${row2}${row3}\n`
+            })
+            tableDisplay += "```"
+            
+            return [`${symbol} ${price}`, predictString, tableDisplay]
+
+        })
+}
+module.exports = { scraper }
+
+if (require.main === module) {
+    let a = scraper()
+    a.then(v => {
+        let table = v[2]
+        let length1 = 0, length2 = 0, length3 = 0
+        table.forEach(v => {
+            if (v[0].length > length1) length1 = v[0].length
+            if (v[1].length > length2) length2 = v[1].length
+            if (v[2].length > length3) length3 = v[2].length
+        })
+        let tableDisplay = ``
+        table.filter((v, i) => i < 5).forEach(row => {
+            let r1 = length1 - row[0].length
+            let r2 = length2 - row[1].length
+            let r3 = length3 - row[2].length
+            let row1 = ` ${row[0]}${" ".repeat(r1)}`
+            let row2 = ` | ${row[1]}${" ".repeat(r2)}`
+            let row3 = ` | ${row[2]}${" ".repeat(r3)} `
+            tableDisplay += `${row1}${row2}${row3}\n`
+        })
+        console.log(tableDisplay)
+
+    })
+
+}
