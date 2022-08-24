@@ -14,7 +14,7 @@ const setAutoMessage = (client, clientId, delay, frequency, setTime) => {
     } else {
         delay = setTime + delay - currentTime
     }
-    // console.log(delay)
+    console.log(delay)
 
     setTimeout(() => {
         scraper().then((a) => {
@@ -69,7 +69,8 @@ client.on('interactionCreate', async interaction => {
     if (commandName === 'ping') {
         await interaction.reply(' ');
     } else if (commandName === 'server') {
-        await interaction.reply(`Server name: ${interaction.guild.name}\nTotal members: ${interaction.guild.memberCount}`);
+        console.log(interaction)
+        await interaction.reply(`Server name: ${interaction.guild.name} ${interaction.channelId}\nTotal members: ${interaction.guild.memberCount}`);
     } else if (commandName === 'user') {
         await interaction.reply('User info.');
     } else if (commandName === 'gasinfo') {
@@ -80,7 +81,7 @@ client.on('interactionCreate', async interaction => {
         let delay = interaction.options.getNumber('delay');
         frequency = frequency * 3600000
         delay = delay * 3600000
-        const channelInfo = interaction.member.guild.systemChannelId
+        const channelInfo = interaction.channelId
         saveAutopost(channelInfo, delay, frequency, Date.now())
         setAutoMessage(client, channelInfo, delay, frequency, Date.now())
         await interaction.reply({ content: 'Success!', ephemeral: true })
