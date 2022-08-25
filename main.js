@@ -18,11 +18,11 @@ const setAutoMessage = (client, clientId, delay, frequency, setTime) => {
 
     setTimeout(() => {
         scraper().then((a) => {
-            client.channels.cache.get(clientId).send(`${a[0]} \n${a[1]} \n ${a[2]}\n @everyone`)
+            client.channels.cache.get(clientId).send(`${a[0]} \n${a[1]} \n ${a[2]}\n`)
         })
         setInterval(() => {
             scraper().then((a) => {
-                client.channels.cache.get(clientId).send(`${a[0]} \n${a[1]} \n ${a[2]}\n @everyone`)
+                client.channels.cache.get(clientId).send(`${a[0]} \n${a[1]} \n ${a[2]}\n`)
             })
         }, frequency);
 
@@ -50,6 +50,10 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
 // When the client is ready, run this code (only once)
 client.once('ready', () => {
+    let a = await scraper()
+    client.user.setPresence({
+        activities: [{ name:`${a[0]} \n${a[1]} Tommorow` }],
+    })
     for (channelId in autoPostConfig) {
         setAutoMessage(
             client,
@@ -75,6 +79,12 @@ client.on('interactionCreate', async interaction => {
         await interaction.reply('User info.');
     } else if (commandName === 'gasinfo') {
         let a = await scraper()
+        client.user.setPresence({
+            game: {
+                name: `${a[0]} \n${a[1]}`,
+                type: "STREAMING"
+            }
+        })
         await interaction.reply(`${a[0]} \n${a[1]} ${a[2]}\n`);
     } else if (commandName === 'setautopost') {
         let frequency = interaction.options.getNumber('frequency');
