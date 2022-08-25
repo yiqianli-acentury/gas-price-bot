@@ -50,8 +50,10 @@ const scraper = async () => {
                 tableDisplay += `${row1}${row2}${row3}\n`
             })
             tableDisplay += "```"
-            
-            return [`${symbol} ${price}`, predictString, tableDisplay]
+
+            let currentState = `${symbol === ":small_red_triangle:" ? "+" : symbol === ":small_red_triangle_down:" ? "-" : ""} ${price} Tmr`
+
+            return [`${symbol} ${price}`, predictString, tableDisplay, currentState]
 
         })
 }
