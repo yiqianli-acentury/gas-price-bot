@@ -51,7 +51,7 @@ const scraper = async () => {
             })
             tableDisplay += "```"
             let currentDate = ""
-            let parseRaw = v[1].split(" ")
+            let parseRaw = predictString.split(" ")
             let index = parseRaw.indexOf("on")
             currentDate = `${parseRaw[index + 1]}${parseRaw[index + 2]}`
             let currentState = `${symbol === ":small_red_triangle:" ? "+" : symbol === ":small_red_triangle_down:" ? "-" : ""} ${price} Tmr`
@@ -64,9 +64,7 @@ module.exports = { scraper }
 if (require.main === module) {
 
     scraper().then(v => {
-        parseRaw = v[1].split(" ")
-        index = parseRaw.indexOf("on")
-        console.log(`${parseRaw[index + 1]}${parseRaw[index + 2]}`)
+        console.log(v[4])
     })
 
 }
