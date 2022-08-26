@@ -54,18 +54,25 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 client.once('ready', async () => {
     let a = await scraper()
     client.user.setPresence({ activities: [{ name: `${a[3]}` }], status: 'idle' });
+    lastCheckDate = ""
     setInterval(async () => {
         let a = await scraper()
         client.user.setPresence({ activities: [{ name: `${a[3]}` }], status: 'idle' });
-    }, 1800 * 1000);
-    for (channelId in autoPostConfig) {
-        setAutoMessage(
-            client,
-            channelId,
-            autoPostConfig[channelId].delay,
-            autoPostConfig[channelId].frequency,
-            autoPostConfig[channelId].setTime)
-    }
+        if (a[4] !== lastCheckDate && len(lastCheckDate) !== 0) {
+            for (channelId in autoPostConfig) {
+                client.channels.cache.get(clientId).send(`${a[0]} \n${a[1]} \n ${a[2]}\n`)
+            }
+        }
+        lastCheckDate = a[4]
+    }, 900 * 1000);
+    // for (channelId in autoPostConfig) {
+    //     setAutoMessage(
+    //         client,
+    //         channelId,
+    //         autoPostConfig[channelId].delay,
+    //         autoPostConfig[channelId].frequency,
+    //         autoPostConfig[channelId].setTime)
+    // }
 });
 
 client.on('interactionCreate', async interaction => {
